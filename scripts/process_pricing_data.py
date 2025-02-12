@@ -2,11 +2,19 @@ import os
 import pandas as pd
 from datetime import datetime
 
+from utils import write_data_to_csv
+
 
 def main():
     coin_universe_data = process_coin_universe()
     coins_to_track = read_coins_to_track()
-    generate_pricing_file(coin_universe_data, coins_to_track)
+    pricing_data = generate_pricing_file(coin_universe_data, coins_to_track)
+
+    #Write pricing data to file
+    file_name = f'pricing_data_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
+    file_path = os.path.join(os.path.dirname(__file__), f'../data/{file_name}')
+    write_data_to_csv(pricing_data, file_path)
+
     return
 
 def process_coin_universe():
@@ -46,10 +54,15 @@ def read_coins_to_track():
     '''
     try:
         # Construct the path to the coins_to_track.csv file
-        coins_to_track_path = os.path.join(os.path.dirname(__file__), '../data/coins_to_track.csv')
+        coins_to_track_path = os.path.join(os.path.dirname(__file__), '../config/coins_to_track.csv')
 
         # Read the coins_to_track.csv file
         coins_to_track = pd.read_csv(coins_to_track_path)['Symbol'].tolist()
+
+        #If BTC is not in the coins to track, add it to the list for future performance purposes
+        if 'BTC' not in coins_to_track:
+            coins_to_track.extend(['BTC'])
+
         return coins_to_track
     except Exception as e:
         print(f"Error reading coins to track file: {e}")
@@ -79,20 +92,10 @@ def generate_pricing_file(coin_universe, coins_to_track):
         # Add a column to indicate if the coin is in the top 10 in market cap of coins
         pricing_data['IsTopCurrency'] = pricing_data['cmc_rank'] <= 10
         print(f"Added columns LoadedAt and IsTopCurrency to pricing data")
+        return pricing_data
     except:
         print(f"Error adding columns to pricing data: {e}")
         raise
-
-    # Write the pricing data to a file
-    try:
-        file_name = f'data/pricing_data_{current_timestamp.strftime("%Y%m%d_%H%M%S")}.csv'
-        pricing_data.to_csv(file_name,index=False)
-        print(f"Pricing data written to {file_name}")
-        return
-    except Exception as e:
-        print(f"Error writing pricing data to file: {e}")
-        raise
-
 
 
 if __name__ == '__main__':

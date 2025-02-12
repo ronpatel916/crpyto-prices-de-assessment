@@ -15,6 +15,7 @@ def get_headers():
         'X-CMC_PRO_API_KEY': API_KEY
     }
 
+
 @retry(stop=stop_after_attempt(3), wait = wait_fixed(20))
 def fetch_data(endpoint, parameters = None):
     url = API_BASE_URL + endpoint
@@ -25,4 +26,17 @@ def fetch_data(endpoint, parameters = None):
         return data
     except Exception as e:
         print(f"Error fetching data from {url}: {e}")
+        raise
+
+
+def write_data_to_csv(data, file_path):
+    '''
+    Write data to csv file
+    '''
+    try:
+        data.to_csv(file_path, index=False)
+        print(f"Data written to file {file_path}")
+        return
+    except Exception as e:
+        print(f"Error writing data to file: {e}")
         raise

@@ -1,12 +1,15 @@
-from utils import fetch_data
+import os
 import pandas as pd
 import math
 
+from utils import fetch_data, write_data_to_csv
 
 
 def main():
     coin_universe = retrieve_coin_universe()
-    write_universe_to_table(coin_universe)
+
+    file_path = os.path.join(os.path.dirname(__file__), '../data/coin_universe.csv')
+    write_data_to_csv(coin_universe, file_path)
 
 
 def get_total_coins():
@@ -61,20 +64,12 @@ def retrieve_coin_universe(limit = 1000):
             print(f'Error retrieving cryptocurrency data for page {page+1}: {e}')
             break
     
-    print(f'Successfully retrieved data for {len(all_data)} coins')
-    return all_data
-
-    
-def write_universe_to_table(data, table_name = 'coin_universe'):
     try:
-        file_path = f"data/{table_name}.csv"
-        #Read json response into pandas dataframe
-        df = pd.json_normalize(data)
-        df.to_csv(file_path,index=False)
-        print(f"Coin universe data written to file {file_path}")
-        return
+        coin_universe_df = pd.json_normalize(all_data)
+        print(f'Successfully retrieved data for {len(all_data)} coins')
+        return coin_universe_df
     except Exception as e:
-        print(f'Error creating coin universe table: {e}')
+        print(f'Error converting coin universe data to dataframe: {e}')
         raise
 
 
