@@ -1,8 +1,11 @@
 import os
 import pandas as pd
 from datetime import datetime
+import logging
 
 from utils import write_data_to_csv
+
+logging.basicConfig(level=logging.INFO)
 
 
 def main():
@@ -20,22 +23,22 @@ def read_latest_pricing_file():
     '''
     # Retrieve file name of latest pricing data file
     try:
-        print("Retrieving latest pricing file")
+        logging.info("Retrieving latest pricing file")
         data_path = os.path.join(os.path.dirname(__file__), '../data')
         pricing_files = [f for f in os.listdir(data_path) if 'pricing_data' in f]
         pricing_files.sort(reverse=True)
         latest_pricing_file = os.path.join(data_path, pricing_files[0])
     except Exception as e:
-        print("pricing_data file not found")
+        logging.error("pricing_data file not found")
         raise
     
     #Read latest pricing data file
     try:
         data = pd.read_csv(latest_pricing_file)
-        print(f"Successfully read latest pricing data file {latest_pricing_file}")
+        logging.info(f"Successfully read latest pricing data file {latest_pricing_file}")
         return data
     except Exception as e:
-        print(f"Unable to read latest pricing data file {latest_pricing_file} to dataframe")
+        logging.error(f"Unable to read latest pricing data file {latest_pricing_file} to dataframe")
         raise
     
 def calculate_24h_performance_rel_to_btc(df):
@@ -48,31 +51,34 @@ def calculate_24h_performance_rel_to_btc(df):
         df['quote.USD.last_updated'] = pd.to_datetime(df['quote.USD.last_updated'])
         df['LoadedAt'] = pd.to_datetime(df['LoadedAt'])
     except Exception as e:
-        print("Failed to convert datetime columns to datetime")
+        logging.error("Failed to convert datetime columns to datetime")
         raise
     
     try:
-        # Extract relevant columns for analysis
-        pricing_data = df[['id','symbol','name','quote.USD.price','quote.USD.percent_change_24h','quote.USD.last_updated','LoadedAt']]
-        pricing_data.columns = ['id','symbol','name','price','price_percent_change_24h','price_last_updated_timestamp','LoadedAt']
+        # Extract relevant columns for analysis and rename
+        perf_comp_data = df[['id','symbol','name','quote.USD.price','quote.USD.percent_change_24h','quote.USD.last_updated','LoadedAt']]
+        perf_comp_data.columns = ['id','symbol','name','price','price_percent_change_24h','price_last_updated_timestamp','LoadedAt']
 
-        bitcoin_data = pricing_data[pricing_data['symbol'] == 'BTC'][['symbol','price_percent_change_24h']]
-        bitcoin_data.columns = ['BTC','BTC_percent_change_24h']
+        # Extract BTC 24h performance and create additional column for this value for comparison
+        btc_pct_change_24h = perf_comp_data[perf_comp_data['symbol'] == 'BTC']['price_percent_change_24h'].values[0]
+        perf_comp_data['BTC_percent_change_24h'] = btc_pct_change_24h
 
-        perf_comp_data = pricing_data.merge(bitcoin_data, how = 'cross')
+        # Calculate performance relative to BTC
         perf_comp_data['performance_vs_BTC'] = perf_comp_data['price_percent_change_24h'] - perf_comp_data['BTC_percent_change_24h']
         perf_comp_data.sort_values('performance_vs_BTC', ascending=True, inplace=True)
         perf_comp_data['analysis_timestamp'] = datetime.now()
 
+        #Round values to 6 decimal places and reorder columns
         perf_comp_data[['price', 'price_percent_change_24h','BTC_percent_change_24h','performance_vs_BTC']] = perf_comp_data[['price', 'price_percent_change_24h','BTC_percent_change_24h','performance_vs_BTC']].round(6)
         perf_comp_data = perf_comp_data[['symbol','name','price','performance_vs_BTC','price_percent_change_24h','BTC_percent_change_24h','price_last_updated_timestamp','analysis_timestamp','LoadedAt']]
-        print("Successfully calculated 24 hour performance relative to BTC")
+        logging.info("Successfully calculated 24 hour performance relative to BTC")
     except Exception as e:
-        print("Failed to calculate 24 hour performance relative to BTC")
+        logging.error("Failed to calculate 24 hour performance relative to BTC")
         raise
 
+    # Filter out BTC row if this coin was not in the original coins_to_track list
     try:    
-        print("Filtering performance data for coins to track")
+        logging.info("Filtering performance data for coins to track")
         # Construct the path to the coins_to_track.csv file
         coins_to_track_path = os.path.join(os.path.dirname(__file__), '../config/coins_to_track.csv')
 
@@ -81,22 +87,7 @@ def calculate_24h_performance_rel_to_btc(df):
         perf_comp_data = perf_comp_data[perf_comp_data['symbol'].isin(coins_to_track)]
         return perf_comp_data
     except Exception as e:
-        print("Failed to filter performance data for coins to track")
-        raise
-
-
-def write_performance_data_to_file(df):
-    '''
-    Write performance data to csv
-    '''
-    # Write the performance data to a file
-    try:
-        file_name = f'data/currency_performance_data_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
-        df.to_csv(file_name,index=False)
-        print(f"Performance data written to {file_name}")
-        return
-    except Exception as e:
-        print(f"Error writing performance data to file: {e}")
+        logging.error("Failed to filter performance data for coins to track")
         raise
 
 

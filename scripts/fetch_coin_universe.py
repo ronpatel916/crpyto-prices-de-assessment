@@ -1,8 +1,11 @@
 import os
 import pandas as pd
 import math
+import logging
 
 from utils import fetch_data, write_data_to_csv
+
+logging.basicConfig(level=logging.INFO)
 
 
 def main():
@@ -27,9 +30,10 @@ def get_total_coins():
     #Extract total number of coins from response
     try:
         num_coins = data['status']['total_count']
+        logging.info(f"Total number of coins: {num_coins}")
         return num_coins
     except Exception as e:
-        print(f"Error fetching total number of coins: {e}")
+        logging.error(f"Error fetching total number of coins: {e}")
         raise
 
 
@@ -45,6 +49,7 @@ def retrieve_coin_universe(limit = 1000):
     #Determine how many requests we will need to make to retrieve the entire coin universe
     num_pages = math.ceil(num_coins/limit)
 
+    logging.info(f'Fetching data for {num_coins} coins in {num_pages} pages')
     #After each request, we will append all_data with the new data from the requested page
     all_data = []
     #Make paginated requests to the listings/latest endpoint
@@ -57,19 +62,19 @@ def retrieve_coin_universe(limit = 1000):
         }
         
         try:
-            print(f"Retrieving next {limit} coins. Start={start}")
+            logging.info(f"Retrieving next {limit} coins. Start={start}")
             data = fetch_data(endpoint, parameters)
             all_data.extend(data['data'])
         except Exception as e:
-            print(f'Error retrieving cryptocurrency data for page {page+1}: {e}')
+            logging.error(f'Error retrieving cryptocurrency data for page {page+1}: {e}')
             break
     
     try:
         coin_universe_df = pd.json_normalize(all_data)
-        print(f'Successfully retrieved data for {len(all_data)} coins')
+        logging.info(f'Successfully retrieved data for {len(all_data)} coins')
         return coin_universe_df
     except Exception as e:
-        print(f'Error converting coin universe data to dataframe: {e}')
+        logging.error(f'Error converting coin universe data to dataframe: {e}')
         raise
 
 

@@ -3,6 +3,9 @@ from dotenv import load_dotenv
 import requests
 from tenacity import retry, stop_after_attempt, wait_fixed
 
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
 
@@ -25,7 +28,7 @@ def fetch_data(endpoint, parameters = None):
         data = response.json()
         return data
     except Exception as e:
-        print(f"Error fetching data from {url}: {e}")
+        logging.error(f"Error fetching data from {url}: {e}")
         raise
 
 
@@ -35,8 +38,8 @@ def write_data_to_csv(data, file_path):
     '''
     try:
         data.to_csv(file_path, index=False)
-        print(f"Data written to file {file_path}")
+        logging.info(f"Data written to file {file_path}")
         return
     except Exception as e:
-        print(f"Error writing data to file: {e}")
+        logging.error(f"Error writing data to file: {e}")
         raise
