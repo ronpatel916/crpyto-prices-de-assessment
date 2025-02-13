@@ -14,10 +14,10 @@ def run_task(script_name):
 
 def main():
     scripts = [
-        'fetch_coin_universe.py',
-        'process_pricing_data.py',
-        'performance_analysis.py',
-        'average_performance.py'
+        'task1_fetch_coin_universe.py',
+        'task2_process_pricing_data.py',
+        'task3_performance_analysis.py',
+        'task4_average_performance.py'
     ]
 
     for script in scripts:

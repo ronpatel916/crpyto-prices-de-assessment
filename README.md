@@ -68,16 +68,21 @@ This project is a data pipeline that tracks cryptocurrency prices using the Coin
   - `coins_to_track.csv`: CSV file containing the list of coins to track. This file will serve as a configuration table for analysts to pick and choose which coins they want to follow.
 
 - `scripts/`
-  - `fetch_coin_universe.py`: Retrieves the entire universe of coins from the CoinMarketCap API
-  - `process_pricing_data.py`: Cleans the coin universe data and filters for the coins we want to track in `config/coins_to_track.csv` as well as BTC if not included, generating a pricing file for these coins
-  - `performance_analysis.py`: Analyzes the 24h price performance of the tracked coins relative to Bitcoin 24h price performance.
-  - `average_performance.py`: Calculates the average 24-hour performance of each tracked coin relative to Bitcoin over each run.
+  - `task1_fetch_coin_universe.py`: Retrieves the entire universe of coins from the CoinMarketCap API
+  - `task2_process_pricing_data.py`: Cleans the coin universe data and filters for the coins we want to track in `config/coins_to_track.csv` as well as BTC if not included, generating a pricing file for these coins
+  - `task3_performance_analysis.py`: Analyzes the 24h price performance of the tracked coins relative to Bitcoin 24h price performance.
+  - `task4_average_performance.py`: Calculates the average 24-hour performance of each tracked coin relative to Bitcoin over each run.
 
 - `data/`: Directory where the fetched and processed data is stored.
 
 
 ## Notes
 
+- The output files requested for this assignment can be found in the `data/` directory
+    - `coin_universe.csv` will be the output file for Task 1
+    - `pricing_data_{date}.csv` will be the output files for Task 2
+    - `currency_performance_data_{date}.csv` will be the output files for Task 3
+    - `average_performance.csv` will be the output of the Python function requested for Task 4
 - The pipeline is designed to stop if any script fails, preventing downstream scripts from running.
 - I made a few design decisions for the sake of simplicity and ease of setup for this assignment that I would not make in a production environment.
     - I have stored the CoinMarketCap API Key in a .env file. In a production environment, I would not store an API Key or any other secret in an environment file, but would use a vault such as AWS Secrets Manager to store these secrets and retrieve the key from there.
