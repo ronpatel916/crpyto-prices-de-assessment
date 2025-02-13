@@ -32,10 +32,14 @@ def fetch_data(endpoint, parameters = None):
         raise
 
 
-def write_data_to_csv(data, file_path):
+def write_data_to_csv(data, file_name, directory_path):
     '''
     Write data to csv file
     '''
+
+    os.makedirs(directory_path, exist_ok=True)
+    file_path = os.path.join(directory_path, file_name)
+
     try:
         data.to_csv(file_path, index=False)
         logging.info(f"Data written to file {file_path}")

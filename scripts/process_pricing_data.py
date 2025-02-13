@@ -14,10 +14,8 @@ def main():
 
     #Write pricing data to file
     file_name = f'pricing_data_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
-    file_path = os.path.join(os.path.dirname(__file__), f'../data/{file_name}')
-    write_data_to_csv(pricing_data, file_path)
+    write_data_to_csv(pricing_data, file_name, directory_path='data')
 
-    return
 
 def process_coin_universe_data():
     '''

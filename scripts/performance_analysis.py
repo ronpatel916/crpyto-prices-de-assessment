@@ -13,9 +13,7 @@ def main():
     performance_df = calculate_24h_performance_rel_to_btc(coin_prices)
 
     file_name = f'currency_performance_data_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
-    file_path = os.path.join(os.path.dirname(__file__), f'../data/{file_name}')
-    write_data_to_csv(performance_df, file_path)
-    return
+    write_data_to_csv(performance_df, file_name, directory_path='data')
 
 def read_latest_pricing_file():
     '''

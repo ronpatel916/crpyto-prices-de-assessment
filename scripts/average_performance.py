@@ -13,8 +13,7 @@ def main():
     if not avg_performance_df.empty:
         #Write average performance data to file
         file_name = 'average_performance.csv'
-        file_path = os.path.join(os.path.dirname(__file__), f'../data/{file_name}')
-        write_data_to_csv(avg_performance_df, file_path)
+        write_data_to_csv(avg_performance_df, file_name, directory_path='data')
 
 
 def calculate_average_24h_performance_per_coin():

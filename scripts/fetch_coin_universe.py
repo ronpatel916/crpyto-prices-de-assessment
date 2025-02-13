@@ -11,8 +11,8 @@ logging.basicConfig(level=logging.INFO)
 def main():
     coin_universe = retrieve_coin_universe()
 
-    file_path = os.path.join(os.path.dirname(__file__), '../data/coin_universe.csv')
-    write_data_to_csv(coin_universe, file_path)
+    file_name = 'coin_universe.csv'
+    write_data_to_csv(coin_universe, file_name, directory_path='data')
 
 
 def get_total_coins():
