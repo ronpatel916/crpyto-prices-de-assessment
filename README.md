@@ -12,8 +12,8 @@ This project is a data pipeline that tracks cryptocurrency prices using the Coin
 1. **Clone the repository:**
 
     ```sh
-    git clone <repository_url>
-    cd <repository_directory>
+    git clone https://github.com/ronpatel916/crpyto-prices-de-assessment.git
+    cd crpyto-prices-de-assessment
     ```
 
 2. **Install Pipenv:**
