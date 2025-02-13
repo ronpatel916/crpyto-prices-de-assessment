@@ -39,7 +39,7 @@ This project is a data pipeline that tracks cryptocurrency prices using the Coin
     In the `.env` file, replace your_coinmarketcap_api_key and add your CoinMarketCap API key:
 
     ```env
-    COINMARKETCAP_API_KEY=your_coinmarketcap_api_key
+    COINMARKETCAP_API_KEY="your_coinmarketcap_api_key"
     ```
 
 ## Running the Pipeline
