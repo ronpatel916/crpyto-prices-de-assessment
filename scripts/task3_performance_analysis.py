@@ -63,7 +63,7 @@ def calculate_24h_performance_rel_to_btc(df):
 
         # Calculate performance relative to BTC
         perf_comp_data['performance_vs_BTC'] = perf_comp_data['price_percent_change_24h'] - perf_comp_data['BTC_percent_change_24h']
-        perf_comp_data.sort_values('performance_vs_BTC', ascending=True, inplace=True)
+        perf_comp_data.sort_values('performance_vs_BTC', key=lambda x: x.abs(), ascending=True, inplace=True)
         perf_comp_data['analysis_timestamp'] = datetime.now()
 
         #Round values to 6 decimal places and reorder columns

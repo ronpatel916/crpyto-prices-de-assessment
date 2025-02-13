@@ -82,8 +82,11 @@ This project is a data pipeline that tracks cryptocurrency prices using the Coin
     - `coin_universe.csv` will be the output file for Task 1
     - `pricing_data_{date}.csv` will be the output files for Task 2
     - `currency_performance_data_{date}.csv` will be the output files for Task 3
+        - For Task 3 Sort, I chose to sort by the absolute value of the difference between bitcoin and the currency to sort by magnitude of change rather than direction.
     - `average_performance.csv` will be the output of the Python function requested for Task 4
+
 - The pipeline is designed to stop if any script fails, preventing downstream scripts from running.
+
 - I made a few design decisions for the sake of simplicity and ease of setup for this assignment that I would not make in a production environment.
     - I have stored the CoinMarketCap API Key in a .env file. In a production environment, I would not store an API Key or any other secret in an environment file, but would use a vault such as AWS Secrets Manager to store these secrets and retrieve the key from there.
     - For the sake of simplicity for this assignment, I chose to orchestrate simply with the subprocess library in orchestrate_pipeline.py. In a production environment, I would opt to a more suitable orchestrationt tool such as Airflow or Prefect. These tools utilize DAGs to organize dependencies and relationships between tasks and dictate how they should be run, and allow for better control over orchestration. The User Interface of these tools are also really convenient to allow for de-bugging data pipelines and manually triggering runs after failures.
