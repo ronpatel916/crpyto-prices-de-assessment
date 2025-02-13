@@ -82,7 +82,7 @@ This project is a data pipeline that tracks cryptocurrency prices using the Coin
     - `coin_universe.csv` will be the output file for Task 1
     - `pricing_data_{date}.csv` will be the output files for Task 2
     - `currency_performance_data_{date}.csv` will be the output files for Task 3
-        - For Task 3 Sort, I chose to sort by the absolute value of the difference between bitcoin and the currency to sort by magnitude of change rather than direction.
+        - For Task 3 sorting, I chose to sort by the absolute value of the difference between bitcoin and the currency to sort by magnitude of change rather than direction.
     - `average_performance.csv` will be the output of the Python function requested for Task 4
 
 - The pipeline is designed to stop if any script fails, preventing downstream scripts from running.
