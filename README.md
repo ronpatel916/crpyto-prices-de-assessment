@@ -34,6 +34,8 @@ This project is a data pipeline that tracks cryptocurrency prices using the Coin
 
 4. **Set up environment variables:**
 
+    If you do not already have a CoinMarketCap API Key, get yourself a free API key for basic, personal use [here](https://coinmarketcap.com/api/pricing/)
+
     In the `.env` file, replace your_coinmarketcap_api_key and add your CoinMarketCap API key:
 
     ```env
